@@ -3,8 +3,8 @@
 import json
 import logging
 
-def generate_spark_code(tables_json, joins_json, predicates, spark_configs, output_table, output_schema, transformations_json):
-    logging.debug(f"generate_spark_code inputs: tables_json={tables_json}, joins_json={joins_json}, predicates={predicates}, spark_configs={spark_configs}, transformations_json={transformations_json}")
+def generate_spark_code(tables_json, joins_json, predicates, spark_configs, output_table, output_schema, transformations_json, write_mode, partition_columns, partition_values):
+    logging.debug(f"generate_spark_code inputs: tables_json={tables_json}, joins_json={joins_json}, predicates={predicates}, spark_configs={spark_configs}, transformations_json={transformations_json}, write_mode={write_mode}, partition_columns={partition_columns}, partition_values={partition_values}")
     
     tables = json.loads(tables_json)
     joins = json.loads(joins_json)
@@ -116,7 +116,20 @@ result_df = result_df.withColumn("{transform['output_column']}", expr("{transfor
     spark_code += f"""
 # Write the result to the output table and show Output
 result_df.show()
-result_df.write.mode("overwrite").saveAsTable("{output_schema}.{output_table}")
+
+# Prepare write operation
+writer = result_df.write.mode("{write_mode}")
+
+# Add partitioning if specified
+if "{partition_columns}" and "{partition_values}":
+    partition_cols = [col.strip() for col in "{partition_columns}".split(',')]
+    partition_vals = [val.strip() for val in "{partition_values}".split(',')]
+    for col, val in zip(partition_cols, partition_vals):
+        writer = writer.partitionBy(col, val)
+
+# Write the data
+writer.saveAsTable("{output_schema}.{output_table}")
+
 print(f"Data written to {{output_schema}}.{{output_table}} on branch {{github_branch}} in {{environment}} environment")
 # Stop the Spark session
 spark.stop()
