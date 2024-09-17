@@ -1,6 +1,5 @@
-# README.md
 
-# Enhanced EMR Job Resource Recommender and Spark Code Generator
+# Enhanced Spark Job Resource Recommender and Spark Code Generator
 
 This application provides a comprehensive interface for recommending EMR job resources and generating Spark code based on user-defined parameters. It combines resource recommendation with Spark code generation, offering a streamlined workflow for data engineers and analysts.
 
