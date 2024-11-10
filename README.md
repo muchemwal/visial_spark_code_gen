@@ -22,7 +22,7 @@ This application provides a comprehensive interface for recommending EMR job res
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-repo/emr-job-recommender.git
+   git clone https://github.com/muchemwal/visial_spark_code_gen.git
    cd emr-job-recommender
    ```
 
